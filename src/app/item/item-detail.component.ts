@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { NativeScriptCommonModule } from '@nativescript/angular'
 import { Item } from './item'
 import { ItemService } from './item.service'
+import {BluetoothScanner} from "~/app/bluetooth-scanner";
 
 @Component({
   selector: 'ns-item-detail',
@@ -21,5 +22,7 @@ export class ItemDetailComponent implements OnInit {
 
     // log the item to the console
     console.log(this.item())
+
+    const scanner = new BluetoothScanner();
   }
 }

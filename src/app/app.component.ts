@@ -1,5 +1,6 @@
 import { Component, NO_ERRORS_SCHEMA } from '@angular/core';
 import { PageRouterOutlet } from '@nativescript/angular';
+import {BluetoothScanner} from "~/app/bluetooth-scanner";
 
 @Component({
   selector: 'ns-app',
@@ -7,4 +8,7 @@ import { PageRouterOutlet } from '@nativescript/angular';
   imports: [PageRouterOutlet],
   schemas: [NO_ERRORS_SCHEMA],
 })
-export class AppComponent {}
+export class AppComponent {
+
+ scanner = new BluetoothScanner();
+}
