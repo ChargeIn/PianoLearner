@@ -4,6 +4,7 @@ import { NativeScriptCommonModule } from '@nativescript/angular'
 import { Item } from './item'
 import { ItemService } from './item.service'
 import {BluetoothScanner} from "~/app/bluetooth-scanner";
+import {LoggerService} from "~/app/logging/logger.service";
 
 @Component({
   selector: 'ns-item-detail',
@@ -15,6 +16,7 @@ export class ItemDetailComponent implements OnInit {
   itemService = inject(ItemService)
   route = inject(ActivatedRoute)
   item = signal<Item>(null)
+  logger = inject(LoggerService);
 
   ngOnInit(): void {
     const id = +this.route.snapshot.params.id
@@ -23,6 +25,7 @@ export class ItemDetailComponent implements OnInit {
     // log the item to the console
     console.log(this.item())
 
-    const scanner = new BluetoothScanner();
+    const scanner = new BluetoothScanner(this.logger);
+    scanner.scanForDevices();
   }
 }
