@@ -1,4 +1,9 @@
-import {AndroidActivityResultEventData, Application, Utils} from "@nativescript/core";
+import {
+  AndroidActivityRequestPermissionsEventData,
+  AndroidActivityResultEventData,
+  Application,
+  Utils
+} from "@nativescript/core";
 import {LoggerService} from "~/app/logging/logger.service";
 import * as geolocation from '@nativescript/geolocation';
 import {BluetoothScanCallback} from "~/app/bluetooth-scan-callback";
@@ -10,6 +15,7 @@ const {ArrayList, UUID} = java.util;
 // https://developer.android.com/reference/android/media/midi/package-summary#btle_scan_devices
 const BLE_MIDI_SERVICE_UUID = "03B80E5A-EDE8-4B33-A751-6CE34EC4C700";
 const ACTION_REQUEST_ENABLE_BLUETOOTH_REQUEST_CODE = 223;
+const PERMISSIONS_REQUEST_CODE = 222;
 
 export class BluetoothScanner {
   bluetoothLeScanner: android.bluetooth.le.BluetoothLeScanner;
@@ -23,7 +29,7 @@ export class BluetoothScanner {
     const bluetoothManager: android.bluetooth.BluetoothManager = appContext.getSystemService(BLUETOOTH_SERVICE);
     this.bluetoothAdapter = bluetoothManager.getAdapter();
 
-    if(!this.bluetoothAdapter) {
+    if (!this.bluetoothAdapter) {
       // device does not support bluetooth;
       return;
     }
@@ -33,34 +39,43 @@ export class BluetoothScanner {
 
   scanForDevices() {
     if (this.scanning || !this.bluetoothAdapter) {
-      return;
+      return new Promise(resolve => resolve(false));
     }
 
-    return this.checkGeoLocation()
+    return this.checkGeoLocationPermissions()
+      .then(result => {
+        if (result) {
+          return this.requestPermissions();
+        }
+        return false;
+      })
+      .then(result => {
+        if (result) {
+          return this.enableBluetooth();
+        }
+        return false;
+      }).then((result) => {
+        if (result) {
+          this.startScan();
+        }
+      }).catch(e => {
+        this.logger.error("Bluetooth Scan failed: " + e)
+      })
   }
 
-  private checkGeoLocation() {
+  private checkGeoLocationPermissions() {
     this.logger.log("Getting permissions for geolocation…");
 
-    geolocation.enableLocationRequest().then(() => {
-      this.logger.log("Successfully retrieved geo location permissions.");
+    return new Promise<boolean>(resolve => {
+      geolocation.enableLocationRequest().then(() => {
+        this.logger.log("Successfully retrieved geo location permissions.");
 
-      this.checkBluetooth();
-
-    }).catch((e) => {
-      console.log(e)
-      this.logger.error("Could not retrieve geo location permissions.");
-    });
-  }
-
-  private checkBluetooth() {
-    this.logger.log("Getting permissions for bluetooth…");
-
-    if (!this.bluetoothAdapter.isEnabled()) {
-      this.enableBluetooth().then(() => this.startScan())
-    } else {
-      this.startScan();
-    }
+        resolve(true);
+      }).catch((e) => {
+        this.logger.error("Could not retrieve geo location permissions: " + e);
+        resolve(false);
+      });
+    })
   }
 
   private startScan() {
@@ -71,25 +86,28 @@ export class BluetoothScanner {
 
     let serviceUuid = UUID.fromString(BLE_MIDI_SERVICE_UUID);
 
-    const filter = new ScanFilter.Builder()
-      .setServiceUuid(new android.os.ParcelUuid(serviceUuid));
+    try {
+      const filter = new ScanFilter.Builder()
+        .setServiceUuid(new android.os.ParcelUuid(serviceUuid))
+        .build();
 
-    console.log("after filter")
+      const scanFilters = new ArrayList();
+      scanFilters.add(filter)
 
-    const scanFilters = new ArrayList();
-    scanFilters.add(filter)
+      const scanSettings = new ScanSettings.Builder()
+        .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+        .build();
 
-    const scanSettings = new ScanSettings.Builder()
-      .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-      .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-      .build();
+      const callback = new BluetoothScanCallback();
+      callback.onScanFailed = this.onScanFailed.bind(this);
+      callback.onBatchScanResults = this.onScanSuccess.bind(this);
 
-    const callback = new BluetoothScanCallback();
-    callback.onScanFailed = this.onScanFailed.bind(this);
-    callback.onScanResult = this.onScanSuccess.bind(this);
+      this.bluetoothLeScanner.startScan(scanFilters, scanSettings, callback);
 
-    console.log("startScan")
-    this.bluetoothLeScanner.startScan(scanFilters, scanSettings, callback);
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 
   private onScanSuccess(callbackType: number, result) {
@@ -126,9 +144,47 @@ export class BluetoothScanner {
     }
   }
 
-  public enableBluetooth() {
-    const methodName = 'enable';
+  public requestPermissions() {
+    this.logger.log("Start requesting permissions…");
 
+    return new Promise<boolean>(resolve => {
+      const onRequestPermissionResult = (args: AndroidActivityRequestPermissionsEventData) => {
+        if (args.requestCode !== PERMISSIONS_REQUEST_CODE) {
+          return;
+        }
+        Application.android.off(Application.android.activityRequestPermissionsEvent, onRequestPermissionResult);
+
+        let permissionsGranted = true;
+
+        for (let i = 0; i < args.grantResults.length; i++) {
+          const result = args.grantResults[i];
+          console.log(args.permissions[i], result)
+          // RESULT_OK = 0
+          if (result !== 0) {
+            this.logger.log("Could not receive all permissions. Missing permission: " + args.permissions[i]);
+            permissionsGranted = false;
+          }
+        }
+
+        resolve(permissionsGranted);
+      }
+
+      Application.android.on(Application.android.activityRequestPermissionsEvent, onRequestPermissionResult);
+
+      const activity = Application.android.foregroundActivity || Application.android.startActivity;
+      activity.requestPermissions(
+        [
+          'android.permission.BLUETOOTH_CONNECT',
+          'android.permission.BLUETOOTH_SCAN',
+          'android.permission.ACCESS_FINE_LOCATION',
+          'android.permission.ACCESS_COARSE_LOCATION'
+        ],
+        PERMISSIONS_REQUEST_CODE
+      )
+    })
+  }
+
+  public enableBluetooth() {
     this.logger.log("Start enabling bluetooth…")
 
     return new Promise((resolve, reject) => {
@@ -175,8 +231,6 @@ export class BluetoothScanner {
 
         this.logger.log("Start bluetooth intend…")
 
-        // todo id, callback and wait
-        activity.requestPermissions(['android.permission.BLUETOOTH_CONNECT'], 12)
         activity.startActivityForResult(intent, ACTION_REQUEST_ENABLE_BLUETOOTH_REQUEST_CODE);
       } catch (ex) {
         this.logger.error("Could not enable bluetooth: " + ex);
