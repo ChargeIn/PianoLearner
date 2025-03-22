@@ -4,20 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.flop.pianolerner.data.BLDevicesViewModel
 import com.flop.pianolerner.ui.theme.PianoLernerTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,6 +20,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PianoLernerTheme {
+                val devicesViewModel = viewModel<BLDevicesViewModel>();
+
                 Scaffold { padding ->
                     val modifier = Modifier.padding(padding)
                     val navController = rememberNavController()
@@ -36,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = "bluetooth_scan",
                         builder = {
                             composable("bluetooth_scan") {
-                                BluetoothScan()
+                                BluetoothScan(devicesViewModel = devicesViewModel)
                             }
                         })
                 }
@@ -44,5 +40,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-

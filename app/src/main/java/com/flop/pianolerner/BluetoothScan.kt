@@ -12,13 +12,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import com.flop.pianolerner.data.BLDevicesViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
@@ -37,21 +35,19 @@ val BLE_MIDI_SERVICE_UUID = "03B80E5A-EDE8-4B33-A751-6CE34EC4C700";
 
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalPermissionsApi::class)
-@Preview(showBackground = true)
 @Composable
-fun BluetoothScan(modifier: Modifier = Modifier) {
+fun BluetoothScan(
+    modifier: Modifier = Modifier,
+    devicesViewModel: BLDevicesViewModel
+) {
     val context = LocalContext.current
 
 //    var bluetoothManager = ContextCompat.getSystemService(BluetoothManager::class);
 
-    val isScanning by remember {
-        mutableStateOf(false)
-    }
-
     val bluetoothPermission =
         rememberMultiplePermissionsState(permissions = BLUETOOTH_PERMISSIONS)
     val locationPermission = rememberMultiplePermissionsState(permissions = LOCATION_PERMISSIONS)
-    
+
 
     /** Enables bluetooth if not active */
     val enableBluetooth = remember {
@@ -68,7 +64,7 @@ fun BluetoothScan(modifier: Modifier = Modifier) {
         }
     }
 
-    if (isScanning) {
+    if (devicesViewModel.scanning) {
         LinearProgressIndicator(modifier = modifier.fillMaxWidth())
     }
 
@@ -80,11 +76,12 @@ fun BluetoothScan(modifier: Modifier = Modifier) {
         Text("Scan for Bluetooth Devices")
         Button(
             onClick = {
+                devicesViewModel.setScanningState(true);
                 locationPermission.launchMultiplePermissionRequest()
                 bluetoothPermission.launchMultiplePermissionRequest()
             }, modifier = modifier
         ) {
-            if (isScanning) {
+            if (devicesViewModel.scanning) {
                 Text("Cancel")
             } else {
                 Text("Scan")
