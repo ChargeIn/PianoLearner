@@ -1,5 +1,6 @@
 package com.flop.pianolerner.data
 
+import android.bluetooth.le.ScanResult
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +11,7 @@ class BLDevicesViewModel : ViewModel() {
     var scanning by mutableStateOf(false);
     var error by mutableStateOf("");
 
-    val devices = mutableStateListOf<BLDevice>();
+    val devices = mutableStateListOf<ScanResult>();
 
     fun setScanningState(loading: Boolean) {
         this.scanning = loading;
