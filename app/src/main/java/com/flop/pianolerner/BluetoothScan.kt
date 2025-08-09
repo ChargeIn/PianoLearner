@@ -155,7 +155,9 @@ fun BluetoothScan(
         if (devicesViewModel.devices.size > 0) {
             LazyColumn(modifier = Modifier.weight(1F)) {
                 items(devicesViewModel.devices) { scanResult ->
-                    DeviceItem(scanResult, modifier)
+                    DeviceItem(scanResult, modifier) {
+                        devicesViewModel.connectToDevice(context, scanResult.device)
+                    }
                 }
             }
         } else {
@@ -169,7 +171,8 @@ fun BluetoothScan(
                 } else {
                     locationPermission.launchMultiplePermissionRequest()
                 }
-            }, modifier = modifier.padding(8.dp)
+            },
+            modifier = modifier.padding(8.dp)
         ) {
             if (devicesViewModel.scanning) {
                 Text("Cancel")
@@ -221,7 +224,7 @@ fun scanMIDIDevices(
             super.onScanResult(callbackType, result)
 
             result?.let {
-                if (!devicesViewModel.devices.any { r -> r.device.address == it.device.address }) {
+                if (!devicesViewModel.devices.any { r -> r.device.address == it.device.address } && result.isConnectable) {
                     devicesViewModel.devices.add(it)
                 }
             }
@@ -264,7 +267,11 @@ fun stopScan(devicesViewModel: BLDevicesViewModel, bluetoothLeScanner: Bluetooth
 }
 
 @Composable()
-private fun DeviceItem(scanResult: ScanResult, modifier: Modifier = Modifier) {
+private fun DeviceItem(
+    scanResult: ScanResult,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     ListItem(
         leadingContent = {
             Text(
@@ -277,10 +284,13 @@ private fun DeviceItem(scanResult: ScanResult, modifier: Modifier = Modifier) {
             Text(scanResult.device.address)
         },
         trailingContent = {
-            Icon(
-                imageVector = Icons.Default.AddCircle,
-                contentDescription = "Connect to Device"
-            )
+            Button(onClick = onClick) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = "Connect to Device"
+                )
+            }
+
         },
     )
 
