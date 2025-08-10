@@ -77,7 +77,7 @@ fun BluetoothScan(
     }
 
     val blAdapter = bluetoothManager.adapter
-    val blLeScanner = blAdapter.bluetoothLeScanner
+    var blLeScanner = blAdapter.bluetoothLeScanner
 
 
     val bluetoothLauncher =
@@ -88,6 +88,11 @@ fun BluetoothScan(
                     "Could not enable bluetooth. Please enable manually.",
                 )
             } else {
+                // scanner is null if bluetooth was disabled
+                if (blLeScanner == null) {
+                    blLeScanner = blAdapter.bluetoothLeScanner;
+                }
+
                 scanMIDIDevices(context, blLeScanner, devicesViewModel)
             }
         }
