@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.flop.pianolerner"
-        minSdk = 33
+        minSdk = 35
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
