@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Florian Plesker
+ * florian.plesker@web.de
+ */
+
 package com.flop.pianolerner
 
 import android.os.Bundle
