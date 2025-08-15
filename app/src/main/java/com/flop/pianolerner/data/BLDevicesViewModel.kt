@@ -66,7 +66,7 @@ class BLDevicesViewModel : ViewModel() {
 
             val gabService = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb")
             val deviceNameUUID = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb");
-            this.queue!!.readCharacteristic(gabService, deviceNameUUID);
+            this.queue!!.readCharacteristic(gabService, deviceNameUUID, {});
         }
     }
 }
