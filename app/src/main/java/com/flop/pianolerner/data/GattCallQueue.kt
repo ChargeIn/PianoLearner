@@ -15,6 +15,7 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.flop.pianolerner.showToast
+import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) constructor(
@@ -120,6 +121,7 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
         val uuid = characteristic.uuid
         when (status) {
             BluetoothGatt.GATT_SUCCESS -> {
+                val test = String(value, StandardCharsets.UTF_8);
                 Log.i(
                     "BluetoothGattCallback",
                     "Read characteristic $uuid:n${
