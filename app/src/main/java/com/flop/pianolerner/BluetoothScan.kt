@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.flop.pianolerner.data.BLDevicesViewModel
+import com.flop.pianolerner.data.ConnectionDialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import java.util.UUID
@@ -72,6 +73,11 @@ fun BluetoothScan(
     modifier: Modifier = Modifier, devicesViewModel: BLDevicesViewModel
 ) {
     val context = LocalContext.current
+
+
+    if (devicesViewModel.connecting) {
+        ConnectionDialog(devicesViewModel, {})
+    }
 
     val locationManager = remember {
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager

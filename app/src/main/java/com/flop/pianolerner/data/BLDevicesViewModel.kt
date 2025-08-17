@@ -49,11 +49,12 @@ import java.util.UUID
 
 class BLDevicesViewModel : ViewModel() {
     var scanning by mutableStateOf(false)
+    var connecting by mutableStateOf(false)
     var error by mutableStateOf("")
     var queue: GattCallQueue? = null
 
-    val devices = mutableStateListOf<ScanResult>();
-    var connectedDevice by mutableStateOf<BluetoothGatt?>(null);
+    val devices = mutableStateListOf<ScanResult>()
+    var connectedDevice by mutableStateOf<BluetoothGatt?>(null)
 
     fun setScanningState(loading: Boolean) {
         this.scanning = loading
@@ -65,8 +66,9 @@ class BLDevicesViewModel : ViewModel() {
             this.queue = GattCallQueue(context, device)
 
             val gabService = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb")
-            val deviceNameUUID = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb");
-            this.queue!!.readCharacteristic(gabService, deviceNameUUID, {});
+            val deviceNameUUID = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
+            this.connecting = true;
+            this.queue!!.readCharacteristic(gabService, deviceNameUUID, {})
         }
     }
 }
