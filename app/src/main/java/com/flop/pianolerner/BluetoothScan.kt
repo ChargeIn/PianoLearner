@@ -75,8 +75,8 @@ fun BluetoothScan(
     val context = LocalContext.current
 
 
-    if (devicesViewModel.connecting) {
-        ConnectionDialog(devicesViewModel, {})
+    if (devicesViewModel.openConnectionDialog) {
+        ConnectionDialog(devicesViewModel, { devicesViewModel.openConnectionDialog = false })
     }
 
     val locationManager = remember {

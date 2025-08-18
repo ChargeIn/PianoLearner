@@ -14,6 +14,9 @@ import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.flop.pianolerner.showToast
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -24,8 +27,13 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
 ) : BluetoothGattCallback() {
     private val queue = mutableListOf<GattAction>()
     private var isRunning = false
-    private var servicesDiscovered = false;
-    private var gatt: BluetoothGatt? = null;
+    private var servicesDiscovered = false
+    private var gatt: BluetoothGatt? = null
+
+    private var readActionCallback: (str: String) -> Unit = {}
+
+    var connecting by mutableStateOf(true)
+    var discoveringServices by mutableStateOf(false)
 
     init {
         device.connectGatt(context, false, this);
@@ -34,7 +42,7 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun readCharacteristic(serviceUUID: UUID, charUUID: UUID, callback: (value: String) -> Unit) {
         this.queue.add(GattReadAction(serviceUUID, charUUID, callback))
-        this.startQueue();
+        this.startQueue()
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -67,7 +75,8 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
             }
 
             if (characteristic.properties and BluetoothGattCharacteristic.PROPERTY_READ != 0) {
-                this.gatt!!.readCharacteristic(characteristic);
+                this.readActionCallback = action.callback
+                this.gatt!!.readCharacteristic(characteristic)
             } else {
                 showToast(
                     context,
@@ -85,11 +94,15 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+        this.connecting = false
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 this@GattCallQueue.gatt = gatt
+
+                this.discoveringServices = true
                 gatt.discoverServices();
+
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 this@GattCallQueue.gatt = null;
                 gatt.close()
@@ -99,16 +112,17 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
             // Error encountered
             this@GattCallQueue.gatt = null;
             gatt.close()
-            showToast(context, "Gatt Connection closed with error code: $status");
+            showToast(context, "Gatt Connection closed with error code: $status")
         }
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-        this.servicesDiscovered = true;
+        this.servicesDiscovered = true
+        this.discoveringServices = false
 
         if (gatt != null) {
-            this.startQueue();
+            this.startQueue()
         }
     }
 
@@ -121,7 +135,7 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
         val uuid = characteristic.uuid
         when (status) {
             BluetoothGatt.GATT_SUCCESS -> {
-                val test = String(value, StandardCharsets.UTF_8);
+                this.readActionCallback(String(value, StandardCharsets.UTF_8))
                 Log.i(
                     "BluetoothGattCallback",
                     "Read characteristic $uuid:n${

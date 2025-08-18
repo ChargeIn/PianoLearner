@@ -7,7 +7,6 @@ package com.flop.pianolerner.data
 
 import android.Manifest
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import androidx.annotation.RequiresPermission
@@ -49,12 +48,14 @@ import java.util.UUID
 
 class BLDevicesViewModel : ViewModel() {
     var scanning by mutableStateOf(false)
-    var connecting by mutableStateOf(false)
     var error by mutableStateOf("")
     var queue: GattCallQueue? = null
 
+    var openConnectionDialog by mutableStateOf(false)
+    var readingProperties by mutableStateOf(false)
+
     val devices = mutableStateListOf<ScanResult>()
-    var connectedDevice by mutableStateOf<BluetoothGatt?>(null)
+    var deviceName by mutableStateOf("")
 
     fun setScanningState(loading: Boolean) {
         this.scanning = loading
@@ -63,12 +64,17 @@ class BLDevicesViewModel : ViewModel() {
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToDevice(context: Context, device: BluetoothDevice?) {
         if (device != null) {
+            this.scanning = false;
             this.queue = GattCallQueue(context, device)
+            this.openConnectionDialog = true
+            this.readingProperties = true;
 
             val gabService = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb")
             val deviceNameUUID = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
-            this.connecting = true;
-            this.queue!!.readCharacteristic(gabService, deviceNameUUID, {})
+            this.queue!!.readCharacteristic(gabService, deviceNameUUID) { name ->
+                this.readingProperties = false
+                this.deviceName = name
+            }
         }
     }
 }
