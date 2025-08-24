@@ -123,7 +123,11 @@ fun ConnectionDialog(
                     onClick = onDismiss,
                     modifier = Modifier.padding(8.dp),
                 ) {
-                    Text("Cancel")
+                    if (model.queue?.connecting == true || model.queue?.discoveringServices == true || model.error != "") {
+                        Text("Cancel")
+                    } else {
+                        Text("Start Playing")
+                    }
                 }
             }
         }

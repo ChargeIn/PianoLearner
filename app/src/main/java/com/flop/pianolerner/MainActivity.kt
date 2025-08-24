@@ -5,6 +5,7 @@
 
 package com.flop.pianolerner
 
+import PlayPiano
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,7 +38,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = "bluetooth_scan",
                         builder = {
                             composable("bluetooth_scan") {
-                                BluetoothScan(devicesViewModel = devicesViewModel)
+                                BluetoothScan(
+                                    devicesViewModel = devicesViewModel,
+                                    navController = navController
+                                )
+                            }
+                            composable("play_piano") {
+                                PlayPiano(
+                                    devicesViewModel = devicesViewModel,
+                                    navController = navController
+                                )
                             }
                         })
                 }

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Florian Plesker
+  ~ florian.plesker@web.de
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -9,6 +14,10 @@
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.software.midi"
         android:required="true" />
 
     <application

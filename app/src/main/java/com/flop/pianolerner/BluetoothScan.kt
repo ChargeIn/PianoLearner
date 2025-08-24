@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.flop.pianolerner.data.BLDevicesViewModel
 import com.flop.pianolerner.data.ConnectionDialog
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -70,13 +71,18 @@ val BLE_MIDI_SERVICE_UUID = "03B80E5A-EDE8-4B33-A751-6CE34EC4C700"
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun BluetoothScan(
-    modifier: Modifier = Modifier, devicesViewModel: BLDevicesViewModel
+    modifier: Modifier = Modifier,
+    devicesViewModel: BLDevicesViewModel,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
 
     if (devicesViewModel.openConnectionDialog) {
-        ConnectionDialog(devicesViewModel, { devicesViewModel.openConnectionDialog = false })
+        ConnectionDialog(devicesViewModel, {
+            devicesViewModel.confirmConnection()
+            navController.navigate("play_piano")
+        })
     }
 
     val locationManager = remember {

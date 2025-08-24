@@ -132,6 +132,8 @@ class GattCallQueue @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT) c
         value: ByteArray,
         status: Int
     ) {
+        this.isRunning = this.queue.size != 0
+
         val uuid = characteristic.uuid
         when (status) {
             BluetoothGatt.GATT_SUCCESS -> {
