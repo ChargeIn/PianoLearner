@@ -64,7 +64,7 @@ fun ConnectionDialog(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 8.dp),
                     )
-                } else if (model.queue?.connecting == true) {
+                } else if (model.midiDevice == null) {
                     Text(
                         text = "Connecting",
                         style = MaterialTheme.typography.bodyMedium,
@@ -74,20 +74,6 @@ fun ConnectionDialog(
 
                     Text(
                         text = "Loading connection to the piano…",
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 8.dp),
-                    )
-                } else if (model.queue?.discoveringServices == true) {
-                    Text(
-                        text = "Discovering Services",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp),
-                    )
-
-                    Text(
-                        text = "Loading functionalities of the piano…",
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 8.dp),
@@ -110,7 +96,9 @@ fun ConnectionDialog(
                         )
                     }
 
-                    val name = if (model.deviceName == "") "Name not found" else model.deviceName
+                    val name = model.midiDevice!!.info.properties.getString(
+                        "name"
+                    )
                     Text(
                         text = "Successfully connected to '$name'",
                         style = MaterialTheme.typography.bodySmall,
@@ -123,7 +111,7 @@ fun ConnectionDialog(
                     onClick = onDismiss,
                     modifier = Modifier.padding(8.dp),
                 ) {
-                    if (model.queue?.connecting == true || model.queue?.discoveringServices == true || model.error != "") {
+                    if (model.midiDevice == null || model.error != "") {
                         Text("Cancel")
                     } else {
                         Text("Start Playing")

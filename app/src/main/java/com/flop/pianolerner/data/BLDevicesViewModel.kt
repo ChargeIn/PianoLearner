@@ -9,16 +9,16 @@ import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanResult
 import android.content.Context
-import android.media.midi.MidiDeviceInfo
+import android.media.midi.MidiDevice
 import android.media.midi.MidiManager
 import android.os.Handler
+import android.os.Looper
 import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import java.util.UUID
 
 
 // Service IDs (https://www.bluetooth.com/specifications/assigned-numbers/)
@@ -53,15 +53,14 @@ import java.util.UUID
 class BLDevicesViewModel : ViewModel() {
     var scanning by mutableStateOf(false)
     var error by mutableStateOf("")
-    var queue: GattCallQueue? = null
-    var device: BluetoothDevice? = null;
+    var device: BluetoothDevice? = null
+    var midiManager: MidiManager? = null
+    var midiDevice by mutableStateOf<MidiDevice?>(null)
 
     var openConnectionDialog by mutableStateOf(false)
-    var readingProperties by mutableStateOf(false)
-    var connected by mutableStateOf(false);
+    var readyToPlay by mutableStateOf(false)
 
     val devices = mutableStateListOf<ScanResult>()
-    var deviceName by mutableStateOf("")
 
     fun setScanningState(loading: Boolean) {
         this.scanning = loading
@@ -72,44 +71,31 @@ class BLDevicesViewModel : ViewModel() {
         if (device != null) {
             this.scanning = false
             this.device = device
-            this.queue = GattCallQueue(context, device)
             this.openConnectionDialog = true
-            this.readingProperties = true
+            this.midiManager = context.getSystemService(Context.MIDI_SERVICE) as MidiManager
 
-            val gabService = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb")
-            val deviceNameUUID = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
-            this.queue!!.readCharacteristic(gabService, deviceNameUUID) { name ->
-                this.readingProperties = false
-                this.deviceName = name
+            this.midiManager?.let {
+                it.openBluetoothDevice(
+                    this.device,
+                    { midiDevice ->
+                        this.midiDevice = midiDevice
+                    },
+                    Handler(Looper.getMainLooper())
+                )
+//
+//                it.registerDeviceCallback(
+//                    MidiManager.TRANSPORT_UNIVERSAL_MIDI_PACKETS, executor, callback
+//                );
             }
         }
     }
 
+    fun deviceCallback() {
+
+    }
+
     fun confirmConnection() {
         this.openConnectionDialog = false
-        this.connected = true
+        this.readyToPlay = true
     }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    fun startPlay(context: Context) {
-        val midiManager: MidiManager = context.getSystemService(Context.MIDI_SERVICE) as MidiManager
-
-        val handler = Handler()
-        midiManager.openBluetoothDevice(this.device, {}, handler)
-        val infos: Array<MidiDeviceInfo> = midiManager.getDevices()
-
-        val midiService = UUID.fromString("03b80e5a-ede8-4b33-a751-6ce34ec4c700")
-        val midiCharacteristic = UUID.fromString("7772e5db-3868-4112-a1a9-f2669d106bf3")
-        this.queue!!.readCharacteristic(midiService, midiCharacteristic) { result ->
-            var test = result
-        }
-    }
-
-//    private fun getMidiDevices(isOutput: Boolean): List {
-//        if (isOutput) {
-//            return mMidiManager.devices.filter { it.outputPortCount > 0 }
-//        } else {
-//            return mMidiManager.devices.filter { it.inputPortCount > 0 }
-//        }
-//    }
 }

@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.flop.pianolerner.data.BLDevicesViewModel
+import com.flop.pianolerner.data.MidiHandler
 
 @Composable
 @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_CONNECT)
@@ -26,6 +28,14 @@ fun PlayPiano(
 ) {
     val context = LocalContext.current
 
+    if (devicesViewModel.midiDevice == null) {
+        navController.navigate("bluetooth_scan")
+        return
+    }
+
+    val midiReceiver = remember {
+        MidiHandler(devicesViewModel.midiDevice!!, devicesViewModel.midiManager!!)
+    }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -38,7 +48,7 @@ fun PlayPiano(
 
         Button(
             onClick = {
-                devicesViewModel.startPlay(context)
+                midiReceiver.startListen()
             },
             modifier = modifier.padding(8.dp)
         ) {
