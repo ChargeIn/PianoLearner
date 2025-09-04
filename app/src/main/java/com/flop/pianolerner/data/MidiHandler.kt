@@ -6,18 +6,22 @@
 package com.flop.pianolerner.data
 
 import android.media.midi.MidiDevice
-import android.media.midi.MidiManager
 import android.media.midi.MidiOutputPort
 import android.media.midi.MidiReceiver
 
-class MidiHandler(val midiDevice: MidiDevice, val midiManager: MidiManager) : MidiReceiver() {
+class MidiHandler() : MidiReceiver() {
 
     var connectedPort: MidiOutputPort? = null
+    var callback: ((NoteOnEvent) -> Unit) = {}
 
-    fun startListen() {
-        val port = this.midiDevice.openOutputPort(0) ?: return
+    constructor(midiDevice: MidiDevice) : this() {
+        val port = midiDevice.openOutputPort(0) ?: return
         connectedPort = port
         port.connect(this)
+    }
+
+    fun addNoteOnListener(callback: (NoteOnEvent) -> Unit) {
+        this.callback = callback
     }
 
     // This assumes the message has been aligned using a MidiFramer
@@ -50,12 +54,14 @@ class MidiHandler(val midiDevice: MidiDevice, val midiManager: MidiManager) : Mi
             MidiStatusCodes.NoteOn -> {
                 val note = reader.read1Byte()
                 val velocity = reader.read1Byte()
-                NoteOnEvent(
+                val event = NoteOnEvent(
                     deltaTime = deltaTime,
                     channel = channel,
                     note = note,
                     velocity = velocity
                 )
+                this.callback(event)
+                return event
             }
 
             MidiStatusCodes.NoteOff -> {
@@ -118,7 +124,7 @@ class MidiHandler(val midiDevice: MidiDevice, val midiManager: MidiManager) : Mi
         }
     }
 
-    private fun isBitSet(byte: Int, pos: Int): Boolean {
+    private fun isBitSet(byte: Byte, pos: Int): Boolean {
         return (byte.toInt() shr pos) == 1
     }
 }
