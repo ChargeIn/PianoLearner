@@ -102,10 +102,25 @@ private fun DrawScope.drawNotes(
                 Color.Black,
                 Offset(
                     size.width / 2,
-                    lastViolinLine - note.note * HALF_LINE_HEIGHT
+                    lastViolinLine - note.pos * HALF_LINE_HEIGHT
                 ),
                 Size(NOTE_WIDTH, NOTE_HEIGHT)
             )
+
+            if (note.lineThrough) {
+                drawLine(
+                    Color.Black,
+                    Offset(
+                        size.width / 2 - 12,
+                        lastViolinLine - note.pos * HALF_LINE_HEIGHT + HALF_NOTE_HEIGHT
+                    ),
+                    Offset(
+                        size.width / 2 + NOTE_WIDTH + 10,
+                        lastViolinLine - note.pos * HALF_LINE_HEIGHT + HALF_NOTE_HEIGHT
+                    ),
+                    6f
+                )
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ class Game(private var handler: MidiHandler) {
     }
 
     fun createNotes() {
-        this.notes.clear();
+        this.notes.clear()
 
         // 14 notes for violin lines
         this.notes.add(Note((Math.random() * 12).toInt(), Clef.VIOLIN, false))

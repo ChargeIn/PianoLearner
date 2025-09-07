@@ -14,11 +14,26 @@ enum class Clef {
 class Note(
     val note: Int, val clef: Clef, var pressed: Boolean
 ) {
+    val pos: Int
+    val lineThrough: Boolean
+
+    init {
+        // one octave is an increment of 12 ( 7 white keys and 5 black)
+        // Violin clef starts at 60
+        val violinBase: Int = this.note - 60
+        val octave: Int = violinBase / 12
+        val rest: Int = violinBase - octave * 12
+
+        if (rest > 4) {
+            this.pos = octave * 7 + (rest + 1) / 2
+        } else {
+            this.pos = octave * 7 + rest / 2
+        }
+        this.lineThrough = this.pos % 2 == 0
+    }
+
     fun isHit(event: NoteOnEvent): Boolean {
-        // LOGIC is quite basic and only for testing
-        // violin normal "C" is number 60 on NoteOnEvent
-        this.pressed =
-            this.note == (event.note - 60) / 2 // TODO fix logic and draw position correctly
+        this.pressed = event.note == this.note
         return this.pressed
     }
 }
