@@ -95,6 +95,7 @@ private fun DrawScope.drawNotes(
     }
 
     val lastViolinLine = center.y - LINE_OFFSET + LINE_HEIGHT - HALF_NOTE_HEIGHT
+    val firstViolinLine = center.y - LINE_OFFSET - ROW_HEIGHT
 
     notes.forEach { note ->
         if (note.clef == Clef.VIOLIN) {
@@ -107,18 +108,31 @@ private fun DrawScope.drawNotes(
                 Size(NOTE_WIDTH, NOTE_HEIGHT)
             )
 
-            if (note.lineThrough) {
+            if (note.showLowerLine) {
                 drawLine(
                     Color.Black,
                     Offset(
                         size.width / 2 - 12,
-                        lastViolinLine - note.pos * HALF_LINE_HEIGHT + HALF_NOTE_HEIGHT
+                        lastViolinLine + HALF_NOTE_HEIGHT
                     ),
                     Offset(
                         size.width / 2 + NOTE_WIDTH + 10,
-                        lastViolinLine - note.pos * HALF_LINE_HEIGHT + HALF_NOTE_HEIGHT
+                        lastViolinLine + HALF_NOTE_HEIGHT
                     ),
-                    6f
+                    LINE_STROKE
+                )
+            } else if (note.showUpperLine) {
+                drawLine(
+                    Color.Black,
+                    Offset(
+                        size.width / 2 - 12,
+                        firstViolinLine - LINE_HEIGHT
+                    ),
+                    Offset(
+                        size.width / 2 + NOTE_WIDTH + 10,
+                        firstViolinLine - LINE_HEIGHT
+                    ),
+                    LINE_STROKE
                 )
             }
         }
