@@ -47,18 +47,18 @@ val copyDebugAARToGadotAddons by tasks.registering(Copy::class) {
     description = "Copies the generated debug AAR binary to the plugin's addons directory"
     from("build/outputs/aar")
     include("$pluginName-debug.aar")
-    into("../../gadot/addons/$pluginName/bin/debug")
+    into("../../godot/addons/$pluginName/bin/debug")
 }
 
 val copyReleaseAARToGadotAddons by tasks.registering(Copy::class) {
     description = "Copies the generated release AAR binary to the plugin's addons directory"
     from("build/outputs/aar")
     include("$pluginName-release.aar")
-    into("../../gadot/addons/$pluginName/bin/release")
+    into("../../godot/addons/$pluginName/bin/release")
 }
 
 val cleanGadotAddons by tasks.registering(Delete::class) {
-    delete("../../gadot/addons/$pluginName")
+    delete("../../godot/addons/$pluginName")
 }
 
 val copyAddonsToGadot by tasks.registering(Copy::class) {
@@ -69,7 +69,7 @@ val copyAddonsToGadot by tasks.registering(Copy::class) {
     finalizedBy(copyReleaseAARToGadotAddons)
 
     from("export_scripts_template")
-    into("../../gadot/addons/$pluginName")
+    into("../../godot/addons/$pluginName")
 }
 
 tasks.named("assemble").configure {
