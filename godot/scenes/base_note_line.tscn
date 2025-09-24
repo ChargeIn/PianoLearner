@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhxo7xtspbwnw"]
+
+[ext_resource type="Texture2D" uid="uid://eq7xk1k57l2v" path="res://assets/note-lines-base.png" id="1_rwa5w"]
+
+[node name="BaseNoteLine" type="Sprite2D"]
+texture = ExtResource("1_rwa5w")
