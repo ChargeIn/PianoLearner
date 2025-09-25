@@ -28,8 +28,7 @@ func _on_play_pressed() -> void:
 	
 
 func handleBluetoothEvent(event) -> void:
-	if(event == BLUETOOTH_SCAN_LOCATION_DISABLED) {
+	if(event == BLUETOOTH_SCAN_LOCATION_DISABLED):
 		
-	}
 	print("Event" + event);
 	print("devices: " + connector_plugin.getScanResults())
