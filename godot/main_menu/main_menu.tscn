@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://cny2fgabprn47"]
 
-[ext_resource type="Script" uid="uid://wk78xtt5iqy7" path="res://scripts/save_load_system.gd" id="1_l6cm7"]
-[ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="2_bqqt6"]
-[ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="3_wu84c"]
+[ext_resource type="Script" uid="uid://wk78xtt5iqy7" path="res://main_menu/main_menu.gd" id="1_3shxk"]
+[ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="2_bws42"]
+[ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="3_3f7m4"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_l6cm7")
+script = ExtResource("1_3shxk")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 1
@@ -20,7 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_bqqt6")
+texture = ExtResource("2_bws42")
 stretch_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -40,12 +40,12 @@ theme_override_constants/separation = 20
 
 [node name="Play" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_wu84c")
+theme = ExtResource("3_3f7m4")
 text = "Play"
 
 [node name="Close" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_wu84c")
+theme = ExtResource("3_3f7m4")
 text = "Close"
 
 [node name="ErrorLabel" type="Label" parent="VBoxContainer"]
