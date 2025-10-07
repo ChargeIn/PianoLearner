@@ -1,9 +1,4 @@
 extends Control
-
-var save_file_path = 'user:://save-game-0.0.0.save'
-	
-func _load_game():
-	var save_file = FileAccess.open(save_file_path, FileAccess.READ)
 	
 
 func _ready():

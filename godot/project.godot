@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 PianoManager="*res://globals/piano_manager.gd"
 
+[display]
+
+window/handheld/orientation=6
+
 [editor]
 
 version_control/plugin_name="GitPlugin"
