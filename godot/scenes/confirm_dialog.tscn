@@ -1,12 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://ca5qdb0pgigvq"]
+[gd_scene load_steps=4 format=3 uid="uid://ca5qdb0pgigvq"]
 
 [ext_resource type="Script" uid="uid://ca1qo5qreocrf" path="res://scripts/confirm_dialog.gd" id="1_sjrqf"]
+[ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="3_1iand"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8vfe7"]
+bg_color = Color(0, 0.42451882, 0.4728347, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.47058824, 0.6039216, 0.73333335, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_size = 4
 
 [node name="ConfirmDialog" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_sjrqf")
@@ -34,6 +50,8 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8vfe7")
+metadata/_edit_group_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Modal"]
 layout_mode = 2
@@ -59,18 +77,20 @@ text = "<Your text here>"
 [node name="HBoxContainer" type="HBoxContainer" parent="Modal/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 8
-theme_override_constants/separation = 8
+theme_override_constants/separation = 32
 alignment = 1
-
-[node name="ActionButton" type="Button" parent="Modal/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Cancel"
 
 [node name="CancelButton" type="Button" parent="Modal/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
+theme = ExtResource("3_1iand")
+text = "Cancel"
+
+[node name="ConfirmButton" type="Button" parent="Modal/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_1iand")
 text = "Confirm
 "

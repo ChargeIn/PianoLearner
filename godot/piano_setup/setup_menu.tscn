@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dflte2g5hr8oy"]
+[gd_scene load_steps=5 format=3 uid="uid://dflte2g5hr8oy"]
 
 [ext_resource type="Script" uid="uid://dlul66ks10fpo" path="res://piano_setup/setup_menu.gd" id="1_h8t14"]
 [ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="1_q4vcb"]
 [ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="2_h8t14"]
+[ext_resource type="PackedScene" uid="uid://ca5qdb0pgigvq" path="res://scenes/confirm_dialog.tscn" id="4_migc0"]
 
 [node name="SetupMenu" type="Control"]
 layout_mode = 3
@@ -58,6 +59,10 @@ text = "Scan for Devices"
 [node name="ErrorLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.174173, 0.127216, 1)
+
+[node name="ConfirmDialog" parent="." instance=ExtResource("4_migc0")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScanDevices" to="." method="_on_scan_devices_pressed"]

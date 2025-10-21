@@ -27,6 +27,7 @@ const val bluetoothHandlerState = "bluetoothHandler"
 enum class BluetoothScanState(val state: String) {
     STARTED("started"),
     LOCATION_DISABLED("locationDisabled"),
+    BLUETOOTH_DISABLED("bluetoothDisabled"),
     NEW_DEVICES("newDevices"),
     STOPPED("stopped"),
 }

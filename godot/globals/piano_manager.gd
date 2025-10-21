@@ -7,8 +7,12 @@ var connector_plugin
 
 const BLUETOOTH_SCAN_STARTED = "started"
 const BLUETOOTH_SCAN_LOCATION_DISABLED = "locationDisabled"
+const BLUETOOTH_SCAN_BLUETOOTH_DISABLED = "bluetoothDisabled"
 const BLUETOOTH_SCAN_NEW_DEVICES = "newDevices"
 const BLUETOOTH_SCAN_STOPPED = "stopped"
+
+signal confirm_location_access()
+signal confirm_bluetooth_access()
 
 var is_loaded = false
 var is_connected = false
@@ -36,6 +40,11 @@ func _handle_bluetooth_event(event: String) -> void:
 	print("Event: " + event);
 		
 	if(event == BLUETOOTH_SCAN_LOCATION_DISABLED):
+		confirm_location_access.emit()
+		pass
+	
+	if(event == BLUETOOTH_SCAN_BLUETOOTH_DISABLED):
+		confirm_bluetooth_access.emit()
 		pass
 		
 
@@ -44,7 +53,12 @@ func _handle_bluetooth_event(event: String) -> void:
 
 func scan_for_devices() -> void:
 	connector_plugin.scanBLEDevices()
-
+	
+func enable_location() -> void:
+	connector_plugin.enableLocation()
+	
+func enable_bluetooth() ->void:
+	connector_plugin.enableBluetooth()
 
 func start_game() -> void:
 	if !is_connected:

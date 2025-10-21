@@ -21,6 +21,10 @@ PianoManager="*res://globals/piano_manager.gd"
 
 [display]
 
+window/size/viewport_width=1080
+window/size/viewport_height=1080
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 window/handheld/orientation=6
 
 [editor]

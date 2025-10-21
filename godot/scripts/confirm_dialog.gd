@@ -6,7 +6,7 @@ signal confirmed(is_confirmed: bool)
 @onready var message_label: Label = %MessageLabel
 
 @onready var cancel_button: Button = %CancelButton
-@onready var action_button: Button = %ActionButton
+@onready var action_button: Button = %ConfirmButton
 
 var is_open: bool = false
 
