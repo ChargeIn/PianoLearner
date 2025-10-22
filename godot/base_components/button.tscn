@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://ci4517onl5s1s"]
+
+[ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="1_5ua2o"]
+[ext_resource type="Script" uid="uid://bhhysabmdiuua" path="res://base_components/button.gd" id="2_13ssc"]
+
+[node name="Btn" type="Button"]
+custom_minimum_size = Vector2(100, 34)
+theme = ExtResource("1_5ua2o")
+text = "Button"
+script = ExtResource("2_13ssc")

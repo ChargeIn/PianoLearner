@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://wk78xtt5iqy7" path="res://main_menu/main_menu.gd" id="1_3shxk"]
 [ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="2_bws42"]
-[ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="3_3f7m4"]
+[ext_resource type="PackedScene" uid="uid://ci4517onl5s1s" path="res://base_components/button.tscn" id="3_bws42"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -38,15 +38,15 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="Play" type="Button" parent="VBoxContainer"]
+[node name="Play" parent="VBoxContainer" instance=ExtResource("3_bws42")]
 layout_mode = 2
-theme = ExtResource("3_3f7m4")
 text = "Play"
+label = "Play"
 
-[node name="Close" type="Button" parent="VBoxContainer"]
+[node name="Close" parent="VBoxContainer" instance=ExtResource("3_bws42")]
 layout_mode = 2
-theme = ExtResource("3_3f7m4")
 text = "Close"
+label = "Close"
 
 [node name="ErrorLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2

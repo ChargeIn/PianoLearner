@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dlul66ks10fpo" path="res://piano_setup/setup_menu.gd" id="1_h8t14"]
 [ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="1_q4vcb"]
-[ext_resource type="Theme" uid="uid://jtqqgwbwjkiv" path="res://theme/theme.tres" id="2_h8t14"]
+[ext_resource type="PackedScene" uid="uid://ci4517onl5s1s" path="res://base_components/button.tscn" id="4_hxfcy"]
 [ext_resource type="PackedScene" uid="uid://ca5qdb0pgigvq" path="res://scenes/confirm_dialog.tscn" id="4_migc0"]
 
 [node name="SetupMenu" type="Control"]
@@ -24,17 +24,14 @@ grow_vertical = 2
 texture = ExtResource("1_q4vcb")
 stretch_mode = 1
 
-[node name="Back" type="Button" parent="."]
-custom_minimum_size = Vector2(0, -49)
+[node name="Back" parent="." instance=ExtResource("4_hxfcy")]
 layout_mode = 1
-anchors_preset = -1
-offset_left = 17.0
-offset_top = 15.0
-offset_right = 94.0
-offset_bottom = 32.0
-theme = ExtResource("2_h8t14")
-text = "Back
-"
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 125.0
+offset_bottom = 59.0
+text = "Back"
+label = "Back"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -51,10 +48,26 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="ScanDevices" type="Button" parent="VBoxContainer"]
+[node name="ResultContainer" type="VBoxContainer" parent="VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-theme = ExtResource("2_h8t14")
-text = "Scan for Devices"
+theme_override_constants/separation = 20
+
+[node name="DeviceList" type="VBoxContainer" parent="VBoxContainer/ResultContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Cancel" parent="VBoxContainer/ResultContainer" instance=ExtResource("4_hxfcy")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Stop scan"
+label = "Stop scan"
+
+[node name="ScanDevices" parent="VBoxContainer" instance=ExtResource("4_hxfcy")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Scan for devices"
+label = "Scan for devices"
 
 [node name="ErrorLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -62,7 +75,9 @@ theme_override_colors/font_color = Color(1, 0.174173, 0.127216, 1)
 
 [node name="ConfirmDialog" parent="." instance=ExtResource("4_migc0")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 
 [connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="VBoxContainer/ResultContainer/Cancel" to="." method="_on_cancel_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScanDevices" to="." method="_on_scan_devices_pressed"]

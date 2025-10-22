@@ -32,6 +32,11 @@ class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
     }
 
     @UsedByGodot
+    fun stopScan() {
+        this.bluetoothHandler.stopScan()
+    }
+
+    @UsedByGodot
     fun enableLocation() {
         this.bluetoothHandler.enableLocation()
     }
@@ -41,7 +46,7 @@ class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
         return this.bluetoothHandler.devices.joinToString("<,>") { scanResult ->
             val address = scanResult.device.address
             val name = scanResult.scanRecord?.deviceName ?: address
-            return@joinToString name.plus(":").plus(address)
+            return@joinToString name.plus(" ( IP: ").plus(address).plus(")")
         }
     }
 

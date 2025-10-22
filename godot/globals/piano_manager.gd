@@ -11,8 +11,13 @@ const BLUETOOTH_SCAN_BLUETOOTH_DISABLED = "bluetoothDisabled"
 const BLUETOOTH_SCAN_NEW_DEVICES = "newDevices"
 const BLUETOOTH_SCAN_STOPPED = "stopped"
 
+const DEVICE_LIST_SEPARATOR = "<,>"
+
 signal confirm_location_access()
 signal confirm_bluetooth_access()
+signal scan_started()
+signal scan_stopped()
+signal new_device_found()
 
 var is_loaded = false
 var is_connected = false
@@ -47,12 +52,30 @@ func _handle_bluetooth_event(event: String) -> void:
 		confirm_bluetooth_access.emit()
 		pass
 		
+	if(event == BLUETOOTH_SCAN_STARTED):
+		scan_started.emit()
+		pass
+		
+	if(event == BLUETOOTH_SCAN_NEW_DEVICES):
+		new_device_found.emit()
+		pass
+		
+	if(event == BLUETOOTH_SCAN_STOPPED):
+		scan_stopped.emit();
+		pass
+		
 
 	print("devices: " + connector_plugin.getScanResults())
 	
+func get_devices() -> PackedStringArray:
+	var results: String = connector_plugin.getScanResults()
+	return results.split(DEVICE_LIST_SEPARATOR)
 
 func scan_for_devices() -> void:
 	connector_plugin.scanBLEDevices()
+	
+func stop_scan() -> void:
+	connector_plugin.stopScan()
 	
 func enable_location() -> void:
 	connector_plugin.enableLocation()

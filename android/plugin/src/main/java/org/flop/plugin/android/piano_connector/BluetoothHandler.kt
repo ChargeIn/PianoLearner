@@ -108,8 +108,15 @@ class BluetoothHandler(val plugin: PianoConnectorAndroidPlugin, val activity: Ac
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun checkBluetoothEnabled() {
-
+        this.bluetoothManager?.adapter?.isEnabled?.let {
+            if (!it) {
+                this.emitSignal(BluetoothScanState.BLUETOOTH_DISABLED)
+            } else {
+                this.initScan()
+            }
+        }
     }
 
     fun enableBluetooth() {
@@ -193,7 +200,7 @@ class BluetoothHandler(val plugin: PianoConnectorAndroidPlugin, val activity: Ac
         }
 
         this.scanning = true
-        emitSignal(BluetoothScanState.STARTED)
+        this.emitSignal(BluetoothScanState.STARTED)
 
         val scanCallback: ScanCallback = object : ScanCallback() {
 
