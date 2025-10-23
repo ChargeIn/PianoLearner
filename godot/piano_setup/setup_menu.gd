@@ -26,9 +26,12 @@ func _update_result_list() -> void:
 	for device in devices:
 		var btn: Button  = button_pck.instantiate()
 		btn.label = device
+		btn.pressed.connect(_on_connect_device.bind(device))
 		device_list.add_child(btn)
-		
-	
+
+func _on_connect_device(device_name: String) -> void:  
+	PianoManager.connect_to_device(device_name) 
+
 func _on_scan_started() -> void:
 	result_box.show()
 	scan_btn.hide()

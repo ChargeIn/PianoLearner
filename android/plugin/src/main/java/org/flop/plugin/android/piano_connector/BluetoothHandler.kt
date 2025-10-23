@@ -29,6 +29,7 @@ enum class BluetoothScanState(val state: String) {
     LOCATION_DISABLED("locationDisabled"),
     BLUETOOTH_DISABLED("bluetoothDisabled"),
     NEW_DEVICES("newDevices"),
+    DEVICE_CONNECTED("deviceConnected"),
     STOPPED("stopped"),
 }
 
@@ -68,6 +69,10 @@ class BluetoothHandler(val plugin: PianoConnectorAndroidPlugin, val activity: Ac
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun startScan() {
+        if (this.scanning) {
+            return
+        }
+
         this.activity.runOnUiThread {
             this.requestNeededPermissions()
         }
@@ -75,7 +80,8 @@ class BluetoothHandler(val plugin: PianoConnectorAndroidPlugin, val activity: Ac
 
     fun stopScan() {
         this.scanning = false
-        emitSignal(BluetoothScanState.STOPPED)
+        this.devices.clear()
+        this.emitSignal(BluetoothScanState.STOPPED)
     }
 
     fun emitSignal(state: BluetoothScanState) {
@@ -117,10 +123,6 @@ class BluetoothHandler(val plugin: PianoConnectorAndroidPlugin, val activity: Ac
                 this.initScan()
             }
         }
-    }
-
-    fun enableBluetooth() {
-
     }
 
     fun enableLocation() {

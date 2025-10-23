@@ -1,14 +1,20 @@
 package org.flop.plugin.android.piano_connector
 
 import android.content.Context
+import android.media.midi.MidiDevice
 import android.media.midi.MidiManager
+import android.media.midi.MidiOutputPort
 import android.media.midi.MidiReceiver
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.RequiresApi
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
+
+const val noteEventSignal = "noteEventHandler"
 
 class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
 
@@ -17,7 +23,9 @@ class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
     @RequiresApi(Build.VERSION_CODES.M)
     val midiManager =
         this.activity!!.applicationContext!!.getSystemService(Context.MIDI_SERVICE) as MidiManager
-    lateinit var midiHelper: MidiHelper
+
+    var midiDevice: MidiDevice? = null
+    var connectedPort: MidiOutputPort? = null
 
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
@@ -46,7 +54,39 @@ class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
         return this.bluetoothHandler.devices.joinToString("<,>") { scanResult ->
             val address = scanResult.device.address
             val name = scanResult.scanRecord?.deviceName ?: address
-            return@joinToString name.plus(" ( IP: ").plus(address).plus(")")
+            return@joinToString name.plus(" (IP: ").plus(address).plus(")")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    @UsedByGodot
+    fun connectToScanResult(deviceName: String) {
+        for (scanResult in this.bluetoothHandler.devices) {
+            val address = scanResult.device.address
+            val name = scanResult.scanRecord?.deviceName ?: address
+            val displayName = name.plus(" (IP: ").plus(address).plus(")")
+
+            if (displayName == deviceName) {
+                this.bluetoothHandler.stopScan()
+
+                this.midiManager?.let {
+                    it.openBluetoothDevice(
+                        scanResult.device,
+                        { midiDevice ->
+                            this.emitSignal(
+                                bluetoothHandlerState,
+                                BluetoothScanState.DEVICE_CONNECTED.state
+                            )
+                            val port = midiDevice.openOutputPort(0) ?: return@openBluetoothDevice
+                            this.midiDevice = midiDevice
+                            this.connectedPort = port
+                            port.connect(this.MidiHelper())
+                        },
+                        Handler(Looper.getMainLooper())
+                    )
+                }
+                return
+            }
         }
     }
 
@@ -65,8 +105,8 @@ class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
 
     override fun getPluginSignals(): Set<SignalInfo> {
         return setOf(
-            SignalInfo("notePressed", String::class.java),
-            SignalInfo("bluetoothHandler", String::class.java),
+            SignalInfo(noteEventSignal, String::class.java),
+            SignalInfo(bluetoothHandlerState, String::class.java),
         )
     }
 
@@ -79,7 +119,8 @@ class PianoConnectorAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
 
             // https://midi.org/midi-over-bluetooth-low-energy-ble-midi
             try {
-                this.parseDataMsg(reader, t.toInt())
+                val event = this.parseDataMsg(reader, t.toInt())
+                emitSignal(noteEventSignal, event.toString())
                 reader.peek1Byte()
             } catch (e: Exception) {
                 // TODO: Implement and save in app log

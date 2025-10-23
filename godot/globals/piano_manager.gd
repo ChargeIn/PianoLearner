@@ -10,6 +10,7 @@ const BLUETOOTH_SCAN_LOCATION_DISABLED = "locationDisabled"
 const BLUETOOTH_SCAN_BLUETOOTH_DISABLED = "bluetoothDisabled"
 const BLUETOOTH_SCAN_NEW_DEVICES = "newDevices"
 const BLUETOOTH_SCAN_STOPPED = "stopped"
+const BLUETOOTH_SCAN_DEVICE_CONNECTED = "deviceConnected"
 
 const DEVICE_LIST_SEPARATOR = "<,>"
 
@@ -18,6 +19,7 @@ signal confirm_bluetooth_access()
 signal scan_started()
 signal scan_stopped()
 signal new_device_found()
+signal device_connected()
 
 var is_loaded = false
 var is_connected = false
@@ -26,6 +28,7 @@ func _ready() -> void:
 	if Engine.has_singleton(connector_plugin_name):
 		connector_plugin = Engine.get_singleton(connector_plugin_name)
 		connector_plugin.bluetoothHandler.connect(_handle_bluetooth_event)
+		connector_plugin.noteEventHandler.connect(_handle_note_event)
 		is_loaded = true
 	else:
 		is_loaded = false
@@ -40,30 +43,35 @@ func _load_save():
 func switch_scene(path: String) -> void:
 	get_tree().call_deferred("change_scene_to_file", path)
 
+func _handle_note_event(event: String) -> void:
+	print("Event: " + event);
 
 func _handle_bluetooth_event(event: String) -> void:
 	print("Event: " + event);
 		
 	if(event == BLUETOOTH_SCAN_LOCATION_DISABLED):
 		confirm_location_access.emit()
-		pass
+		return
 	
 	if(event == BLUETOOTH_SCAN_BLUETOOTH_DISABLED):
 		confirm_bluetooth_access.emit()
-		pass
+		return
 		
 	if(event == BLUETOOTH_SCAN_STARTED):
 		scan_started.emit()
-		pass
+		return
 		
 	if(event == BLUETOOTH_SCAN_NEW_DEVICES):
 		new_device_found.emit()
-		pass
+		return
 		
 	if(event == BLUETOOTH_SCAN_STOPPED):
 		scan_stopped.emit();
-		pass
+		return
 		
+	if(event == BLUETOOTH_SCAN_DEVICE_CONNECTED):
+		device_connected.emit()
+		return
 
 	print("devices: " + connector_plugin.getScanResults())
 	
@@ -80,13 +88,15 @@ func stop_scan() -> void:
 func enable_location() -> void:
 	connector_plugin.enableLocation()
 	
-func enable_bluetooth() ->void:
+func enable_bluetooth() -> void:
 	connector_plugin.enableBluetooth()
+	
+func connect_to_device(device_name: String) -> void:
+	connector_plugin.connectToScanResult(device_name)
 
 func start_game() -> void:
 	if !is_connected:
 		switch_scene("res://piano_setup/setup_menu.tscn")
-
 
 func to_main_menu() -> void:
 	switch_scene("res://main_menu/main_menu.tscn")
