@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="1_cl2th"]
 [ext_resource type="Script" uid="uid://b3m7ht8rg2q4v" path="res://scenes/type_game/type_game.gd" id="1_djsc0"]
-[ext_resource type="Texture2D" uid="uid://bi6u3a2bhgcwn" path="res://assets/note-lines-base-small.png" id="3_dpfct"]
+[ext_resource type="Texture2D" uid="uid://eq7xk1k57l2v" path="res://assets/note-lines-base.png" id="3_tiefp"]
 [ext_resource type="Texture2D" uid="uid://bquxrjxtty5gg" path="res://assets/violin-key.png" id="5_grp7d"]
 
 [node name="TypeGame" type="Control"]
@@ -31,19 +31,19 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -27.0
-offset_bottom = 27.0
+offset_top = -33.5
+offset_bottom = 33.5
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("3_dpfct")
+texture = ExtResource("3_tiefp")
 stretch_mode = 1
 
 [node name="ViolinKey" type="Sprite2D" parent="."]
-position = Vector2(20, 268.5)
-scale = Vector2(0.703125, 0.6796875)
+position = Vector2(25.999998, 271.00003)
+scale = Vector2(0.79687494, 0.79687524)
 texture = ExtResource("5_grp7d")
 
-[node name="NoteSpawrn" type="Control" parent="."]
+[node name="NoteSpawn" type="Control" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 6
@@ -51,8 +51,5 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -1.0
-offset_top = -20.0
-offset_bottom = 20.0
 grow_horizontal = 0
 grow_vertical = 2

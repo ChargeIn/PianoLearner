@@ -3,17 +3,19 @@ extends Sprite2D
 @export var noteType: int	
 
 var linePosition = 0
-var lineHeight = 30
-const sprite_offset_y = 3.5
+var lineHeight = 8 # line height 13 px  + 3 px line it self  => 16px / 2
+const violin_c_start_pos = 48
+const sprite_offset = -16
 
 func init(type: int) -> void:
 	noteType = type
-	position = Vector2(0, sprite_offset_y)
+	updateNodePositionFromType(type)
+	position = Vector2(0, violin_c_start_pos + sprite_offset)
 
 func move(x: int, y: int) -> void:
-	position += Vector2(x, y + linePosition * lineHeight)
+	position += Vector2(x, y - linePosition * lineHeight)
 
-func getNodePositionFromType(type: int) -> void:
+func updateNodePositionFromType(type: int) -> void:
 	# one octave is an increment of 12 ( 7 white keys and 5 black)
 	# Violin clef starts at 60
 	var violinBase: int = type - 60
