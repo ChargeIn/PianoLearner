@@ -15,6 +15,7 @@ func _ready() -> void:
 	PianoManager.scan_started.connect(_on_scan_started)
 	PianoManager.scan_stopped.connect(_on_scan_stopped)
 	PianoManager.new_device_found.connect(_update_result_list)
+	PianoManager.device_connected.connect(PianoManager.start_game)
 	
 func _update_result_list() -> void:
 	var devices: PackedStringArray = PianoManager.get_devices()
@@ -67,7 +68,6 @@ func _confirm_location_access_callback(confirmed: bool) -> void:
 	
 	if confirmed:
 		PianoManager.enable_location()
-
 
 func _on_cancel_pressed() -> void:
 	PianoManager.stop_scan()

@@ -20,9 +20,10 @@ signal scan_started()
 signal scan_stopped()
 signal new_device_found()
 signal device_connected()
+signal note_pressed(note: int)
 
 var is_loaded = false
-var is_connected = false
+var is_device_connected = false
 
 func _ready() -> void:
 	if Engine.has_singleton(connector_plugin_name):
@@ -45,6 +46,13 @@ func switch_scene(path: String) -> void:
 
 func _handle_note_event(event: String) -> void:
 	print("Event: " + event);
+	
+	var dataParts = event.split(",")
+	var eventType = dataParts.get(0)
+	
+	if eventType == "NoteOn":
+		note_pressed.emit(int(dataParts.get(1)))
+	
 
 func _handle_bluetooth_event(event: String) -> void:
 	print("Event: " + event);
@@ -70,6 +78,7 @@ func _handle_bluetooth_event(event: String) -> void:
 		return
 		
 	if(event == BLUETOOTH_SCAN_DEVICE_CONNECTED):
+		is_device_connected = true
 		device_connected.emit()
 		return
 
@@ -95,10 +104,13 @@ func connect_to_device(device_name: String) -> void:
 	connector_plugin.connectToScanResult(device_name)
 
 func start_game() -> void:
-	if !is_connected:
-		switch_scene("res://piano_setup/setup_menu.tscn")
+	if !is_device_connected:
+		switch_scene("res://scenes/piano_setup/setup_menu.tscn")
+		return
+	
+	switch_scene("res://scenes/type_game/type_game.tscn")
 
 func to_main_menu() -> void:
-	switch_scene("res://main_menu/main_menu.tscn")
+	switch_scene("res://scenes/main_menu/main_menu.tscn")
 	
 	

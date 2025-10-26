@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dflte2g5hr8oy"]
 
-[ext_resource type="Script" uid="uid://dlul66ks10fpo" path="res://piano_setup/setup_menu.gd" id="1_h8t14"]
+[ext_resource type="Script" uid="uid://dlul66ks10fpo" path="res://scenes/piano_setup/setup_menu.gd" id="1_h8t14"]
 [ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="1_q4vcb"]
 [ext_resource type="PackedScene" uid="uid://ci4517onl5s1s" path="res://base_components/button.tscn" id="4_hxfcy"]
 [ext_resource type="PackedScene" uid="uid://ca5qdb0pgigvq" path="res://scenes/confirm_dialog.tscn" id="4_migc0"]

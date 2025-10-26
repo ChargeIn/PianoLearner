@@ -40,7 +40,11 @@ data class NoteOnEvent(
     override val channel: Int,
     val note: Int,
     val velocity: Int
-) : MidiDataEvent()
+) : MidiDataEvent() {
+    override fun toString(): String {
+        return "NoteOn," + this.note
+    }
+}
 
 data class NoteOffEvent(
     override val eventType: MidiStatusCodes = MidiStatusCodes.NoteOff,
@@ -48,7 +52,11 @@ data class NoteOffEvent(
     override val channel: Int,
     val note: Int,
     val velocity: Int
-) : MidiDataEvent()
+) : MidiDataEvent() {
+    override fun toString(): String {
+        return "NoteOff," + this.note
+    }
+}
 
 data class PolyphonicKeyPressureEvent(
     override val eventType: MidiStatusCodes = MidiStatusCodes.PolyphonicKeyPressure,
