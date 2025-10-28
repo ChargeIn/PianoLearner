@@ -2,20 +2,23 @@ extends Sprite2D
 	
 @export var noteType: int	
 
+@export var helper_line: PackedScene = preload("res://scenes/type_game/note/helper_line.tscn")
+
 var linePosition = 0
-var lineHeight = 8 # line height 13 px  + 3 px line it self  => 16px / 2
+var lineHeight = 10.5 # line height 18 px  + 3 px line it self  => 21px / 2
 const violin_c_start_pos = 48
-const sprite_offset = -16
+const sprite_offset = -32
+
+var helper_lines = []
 
 func init(type: int) -> void:
 	noteType = type
-	updateNodePositionFromType(type)
-	position = Vector2(0, violin_c_start_pos + sprite_offset)
+	initNoteFromeType(type)
 
 func move(x: int, y: int) -> void:
 	position += Vector2(x, y - linePosition * lineHeight)
 
-func updateNodePositionFromType(type: int) -> void:
+func initNoteFromeType(type: int) -> void:
 	# one octave is an increment of 12 ( 7 white keys and 5 black)
 	# Violin clef starts at 60
 	var violinBase: int = type - 60
@@ -36,3 +39,18 @@ func updateNodePositionFromType(type: int) -> void:
 		linePosition = octave * 7 + 5
 	if rest > 10:
 		linePosition = octave * 7 + 6
+	
+	position = Vector2(0, violin_c_start_pos + sprite_offset)
+	
+	# spawn helper lines if needed
+	spawnHelperLine()
+
+func spawnHelperLine() -> void:
+	var sprite = helper_line.instantiate()
+	helper_lines.push_back(sprite)
+	add_child(sprite)
+	
+func clearHelperLines() -> void:
+	for line in helper_lines:
+		remove_child(line)
+	

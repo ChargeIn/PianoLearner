@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bi6u3a2bhgcwn"
-path="res://.godot/imported/note-lines-base-small.png-88285df18f03f659e868434d7b7f4c33.ctex"
+uid="uid://b5we7kxt2kujl"
+path="res://.godot/imported/base-key.png-4ae82f944c4cb0e862048eaf4b6d5dd0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/note-lines-base-small.png"
-dest_files=["res://.godot/imported/note-lines-base-small.png-88285df18f03f659e868434d7b7f4c33.ctex"]
+source_file="res://assets/originals/base-key.png"
+dest_files=["res://.godot/imported/base-key.png-4ae82f944c4cb0e862048eaf4b6d5dd0.ctex"]
 
 [params]
 

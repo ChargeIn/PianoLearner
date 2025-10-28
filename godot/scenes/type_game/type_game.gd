@@ -1,6 +1,6 @@
 extends Control
 
-@onready var noteScene = preload("res://scenes/type_game/note/note.tscn")
+@onready var note_scene = preload("res://scenes/type_game/note/note.tscn")
 @onready var note_spawn = %NoteSpawn
 
 enum GameMode {
@@ -25,7 +25,7 @@ func _spawn_note() -> void:
 	
 	spawned_notes.clear()
 	
-	var new_note = noteScene.instantiate()
+	var new_note = note_scene.instantiate()
 	new_note.init(generate_note())
 	new_note.move(note_spawn.position.x - size.x / 2, note_spawn.position.y)
 	call_deferred("add_child", new_note)

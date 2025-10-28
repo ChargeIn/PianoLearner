@@ -5,7 +5,7 @@ extends Control
 @onready var result_box: VBoxContainer = %ResultContainer
 @onready var device_list: VBoxContainer = %DeviceList
 
-var button_pck = preload("res://base_components/button.tscn")
+var button_pck: PackedScene = preload("res://base_components/button.tscn")
 
 func _ready() -> void:
 	result_box.hide()
