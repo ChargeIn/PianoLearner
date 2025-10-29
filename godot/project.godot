@@ -25,7 +25,6 @@ window/size/viewport_width=540
 window/size/viewport_height=540
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
-window/handheld/orientation=6
 
 [editor]
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://2jnfyss17x3h"]
 
-[ext_resource type="Texture2D" uid="uid://dp2ynq05i2mev" path="res://assets/helper-line.png" id="1_2fd7b"]
+[ext_resource type="Texture2D" uid="uid://drktjj1di0k8g" path="res://assets/originals/helper_line.png" id="1_2fd7b"]
 
 [node name="HelperLine" type="Sprite2D"]
 texture = ExtResource("1_2fd7b")

@@ -6,8 +6,7 @@ extends Sprite2D
 
 var linePosition = 0
 var lineHeight = 10.5 # line height 18 px  + 3 px line it self  => 21px / 2
-const violin_c_start_pos = 48
-const sprite_offset = -32
+const zero_position = 384
 
 var helper_lines = []
 
@@ -21,8 +20,8 @@ func move(x: int, y: int) -> void:
 func initNoteFromeType(type: int) -> void:
 	# one octave is an increment of 12 ( 7 white keys and 5 black)
 	# Violin clef starts at 60
-	var violinBase: int = type - 60
-	var octave: int = violinBase / 12 
+	var violinBase: int = type
+	var octave: int = violinBase / 12
 	var rest: int = violinBase - octave * 12
 
 	if rest == 0 || rest == 1:
@@ -40,13 +39,35 @@ func initNoteFromeType(type: int) -> void:
 	if rest > 10:
 		linePosition = octave * 7 + 6
 	
-	position = Vector2(0, violin_c_start_pos + sprite_offset)
+	position = Vector2(0, zero_position)
 	
 	# spawn helper lines if needed
-	spawnHelperLine()
+	if type >= 84:
+		spawnHelperLine(0)
+		spawnHelperLine(2)
+	elif type >= 83:
+		spawnHelperLine(1)
+	elif type >= 81:
+		spawnHelperLine(0)
+	if type <= 54:
+		spawnHelperLine(-4)
+		spawnHelperLine(-2)
+		spawnHelperLine(0)
+	elif type <= 56:
+		spawnHelperLine(-3)
+		spawnHelperLine(-1)
+	elif type <= 58:
+		spawnHelperLine(-2)
+		spawnHelperLine(0)
+	elif type <= 59:
+		spawnHelperLine(-1)
+	elif type <= 60: 
+		spawnHelperLine(0)
+	
 
-func spawnHelperLine() -> void:
-	var sprite = helper_line.instantiate()
+func spawnHelperLine(line: int) -> void:
+	var sprite: Sprite2D = helper_line.instantiate()
+	sprite.position = Vector2(-12, 47 + line * lineHeight)
 	helper_lines.push_back(sprite)
 	add_child(sprite)
 	
