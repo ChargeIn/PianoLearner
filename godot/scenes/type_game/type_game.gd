@@ -1,7 +1,10 @@
 extends Control
 
 @onready var note_scene = preload("res://scenes/type_game/note/note.tscn")
-@onready var note_spawn = %NoteSpawn
+@onready var violin_note_spawn = %ViolinNoteSpawn
+@onready var bass_note_spawn = %BassNoteSpawn
+@onready var violin_line: Control = %ViolinLine
+@onready var bass_line: Control = %BassLine
 @onready var note_name_label: Label = %NoteName
 
 enum GameMode {
@@ -10,6 +13,7 @@ enum GameMode {
 }
 
 const LOWEST_VIOLIN_NOTE = 57
+const LOWEST_BASS_NOTE = 25;
 
 var spawn_range = 24
 var last_spwaned_note = -1
@@ -23,14 +27,14 @@ func _ready() -> void:
 
 func _spawn_note() -> void:
 	for n in spawned_notes:
-		remove_child(n)
+		violin_line.remove_child(n)
 	
 	spawned_notes.clear()
 	
 	var new_note = note_scene.instantiate()
 	new_note.init(generate_note())
-	new_note.move(note_spawn.position.x - size.x / 2, note_spawn.position.y)
-	call_deferred("add_child", new_note)
+	new_note.move(size.x /2, violin_note_spawn.position.y)
+	violin_line.add_child(new_note)
 	spawned_notes.push_back(new_note)
 	
 	note_name_label.text = note_names[new_note.noteType]
@@ -60,8 +64,6 @@ func generate_note() -> int:
 func is_black_note(note: int) -> bool:
 	var base = note % 12
 	return base == 1 || base == 3 || base == 6 || base == 8 || base == 10
-
-
 
 
 

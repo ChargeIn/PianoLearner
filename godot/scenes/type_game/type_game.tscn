@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bw2domouw7xbr"]
+[gd_scene load_steps=6 format=3 uid="uid://bw2domouw7xbr"]
 
 [ext_resource type="Texture2D" uid="uid://dxngy6k2ptp5f" path="res://assets/Brown.png" id="1_cl2th"]
 [ext_resource type="Script" uid="uid://b3m7ht8rg2q4v" path="res://scenes/type_game/type_game.gd" id="1_djsc0"]
 [ext_resource type="Texture2D" uid="uid://6tmxsqdw51i" path="res://assets/originals/lines.png" id="3_tiefp"]
 [ext_resource type="Texture2D" uid="uid://2il72r76xvch" path="res://assets/originals/violin-key.png" id="4_tiefp"]
+[ext_resource type="Texture2D" uid="uid://b5we7kxt2kujl" path="res://assets/originals/bass-key.png" id="4_yoc40"]
 
 [node name="TypeGame" type="Control"]
 layout_mode = 3
@@ -24,25 +25,54 @@ grow_vertical = 2
 texture = ExtResource("1_cl2th")
 stretch_mode = 1
 
-[node name="NoteLines" type="TextureRect" parent="."]
+[node name="NoteName" type="Label" parent="."]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -103.0
+offset_right = 20.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -33.5
-offset_bottom = 33.5
+offset_top = -106.0
+offset_bottom = 106.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 80
+
+[node name="ViolinLine" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+
+[node name="NoteLines" type="TextureRect" parent="VBoxContainer/ViolinLine"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -54.0
+offset_bottom = 54.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_tiefp")
 stretch_mode = 1
 
-[node name="ViolinKey" type="Sprite2D" parent="."]
-position = Vector2(33, 271)
-texture = ExtResource("4_tiefp")
-
-[node name="NoteSpawn" type="Control" parent="."]
+[node name="ViolinNoteSpawn" type="Control" parent="VBoxContainer/ViolinLine"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 6
@@ -53,19 +83,39 @@ anchor_bottom = 0.5
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="NoteName" type="Label" parent="."]
+[node name="ViolinKey" type="Sprite2D" parent="VBoxContainer/ViolinLine"]
+position = Vector2(28, 48)
+texture = ExtResource("4_tiefp")
+
+[node name="BassLine" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 104)
+layout_mode = 2
+
+[node name="NoteLines" type="TextureRect" parent="VBoxContainer/BassLine"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -54.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_tiefp")
+stretch_mode = 1
+
+[node name="BassNoteSpawn" type="Control" parent="VBoxContainer/BassLine"]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -115.0
-offset_right = 20.0
-offset_bottom = -62.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 40
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="BassKey" type="Sprite2D" parent="VBoxContainer/BassLine"]
+position = Vector2(31, 38)
+texture = ExtResource("4_yoc40")
