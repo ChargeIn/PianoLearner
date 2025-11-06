@@ -13,7 +13,7 @@ enum GameMode {
 }
 
 const LOWEST_VIOLIN_NOTE = 57
-const LOWEST_BASS_NOTE = 25;
+const LOWEST_BASS_NOTE = 36;
 
 var spawn_range = 24
 var last_spwaned_note = -1
@@ -28,29 +28,39 @@ func _ready() -> void:
 func _spawn_note() -> void:
 	for n in spawned_notes:
 		violin_line.remove_child(n)
+		bass_line.remove_child(n)
 	
 	spawned_notes.clear()
 	
 	var new_note = note_scene.instantiate()
-	new_note.init(generate_note())
-	new_note.move(size.x /2, violin_note_spawn.position.y)
-	violin_line.add_child(new_note)
-	spawned_notes.push_back(new_note)
 	
+	var test_bass = randi_range(0, 1)
+	var is_bass = test_bass == 0
+	new_note.init(generate_note(is_bass), is_bass)
+	
+	if is_bass:
+		new_note.move(size.x /2, bass_note_spawn.position.y)
+		bass_line.add_child(new_note)
+	else:
+		new_note.move(size.x /2, violin_note_spawn.position.y)
+		violin_line.add_child(new_note)
+	
+	spawned_notes.push_back(new_note)
 	note_name_label.text = note_names[new_note.noteType]
 
 func _note_pressed(note: int) -> void:
 	if spawned_notes.size() == 1 && spawned_notes.get(0).noteType == note:
 		_spawn_note()
 
-func generate_note() -> int:
-	var note = LOWEST_VIOLIN_NOTE
+func generate_note(bass_note: bool) -> int:
+	var start = LOWEST_BASS_NOTE if bass_note else LOWEST_VIOLIN_NOTE
+	var note = start
 	
 	if game_mode == GameMode.WHITE_NOTES_ONLY:
-		note = LOWEST_VIOLIN_NOTE + randi_range(0, spawn_range)
+		note = start + randi_range(0, spawn_range)
 		
 		while is_black_note(note) || note == last_spwaned_note:
-			note = LOWEST_VIOLIN_NOTE + randi_range(0, spawn_range)
+			note = start + randi_range(0, spawn_range)
 
 	else:
 		note += randi_range(0, spawn_range)
