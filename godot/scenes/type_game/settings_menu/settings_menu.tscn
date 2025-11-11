@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://bmuiaovqmj42"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 19
+
+[node name="RangeContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RangeLabel" type="Label" parent="VBoxContainer/RangeContainer"]
+layout_mode = 2
+text = "Note range"
+
+[node name="RangeValueLabel" type="Label" parent="VBoxContainer/RangeContainer"]
+layout_mode = 2
+text = "12"
+
+[node name="NoteRange" type="HSlider" parent="VBoxContainer/RangeContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 24.0
+
+[node name="NoteLineTypeContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="NoteLineTypeLabel" type="Label" parent="VBoxContainer/NoteLineTypeContainer"]
+layout_mode = 2
+text = "Game mode"
+
+[node name="NoteLineTypeSelector" type="OptionButton" parent="VBoxContainer/NoteLineTypeContainer"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Violine & bass notes"
+popup/item_0/id = 0
+popup/item_1/text = "Violine notes"
+popup/item_1/id = 1
+popup/item_2/text = "Bass notes"
+popup/item_2/id = 2
+
+[node name="NoteTypesContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="WNOLabel" type="Label" parent="VBoxContainer/NoteTypesContainer"]
+layout_mode = 2
+text = "White notes only"
+
+[node name="WhiteNotesOnly" type="CheckButton" parent="VBoxContainer/NoteTypesContainer"]
+layout_mode = 2
